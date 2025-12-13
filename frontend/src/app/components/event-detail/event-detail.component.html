@@ -1,0 +1,103 @@
+<div class="container" *ngIf="!loading && event">
+  <button mat-button routerLink="/events">
+    <mat-icon>arrow_back</mat-icon>
+    Back to Events
+  </button>
+
+  <mat-card class="event-detail-card">
+    <img mat-card-image [src]="event.posterUrl || 'assets/default-event.jpg'" [alt]="event.title" class="event-image">
+    
+    <mat-card-header>
+      <mat-card-title>
+        <h1>{{event.title}}</h1>
+        <mat-chip-set>
+          <mat-chip>{{event.category}}</mat-chip>
+          <mat-chip *ngIf="event.isFull" color="warn">FULL</mat-chip>
+          <mat-chip *ngIf="userRsvp" [color]="userRsvp.status === 'CONFIRMED' ? 'accent' : 'primary'">
+            {{userRsvp.status}}
+          </mat-chip>
+        </mat-chip-set>
+      </mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <div class="event-meta">
+        <div class="meta-item">
+          <mat-icon>schedule</mat-icon>
+          <div>
+            <strong>Date & Time</strong>
+            <p>{{event.eventDate | date:'full'}}</p>
+          </div>
+        </div>
+
+        <div class="meta-item">
+          <mat-icon>location_on</mat-icon>
+          <div>
+            <strong>Location</strong>
+            <p>{{event.location}}</p>
+          </div>
+        </div>
+
+        <div class="meta-item">
+          <mat-icon>person</mat-icon>
+          <div>
+            <strong>Organizer</strong>
+            <p>{{event.organizerName}}</p>
+          </div>
+        </div>
+
+        <div class="meta-item">
+          <mat-icon>people</mat-icon>
+          <div>
+            <strong>Capacity</strong>
+            <p>{{event.attendeeCount}} / {{event.capacity}} attendees</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="description">
+        <h3>About This Event</h3>
+        <p>{{event.description}}</p>
+      </div>
+
+      <div class="actions" *ngIf="authService.isLoggedIn()">
+        <ng-container *ngIf="!isOrganizer">
+          <button mat-raised-button color="primary" (click)="joinEvent()" *ngIf="!userRsvp">
+            <mat-icon>how_to_reg</mat-icon>
+            Join Event
+          </button>
+          <button mat-raised-button color="warn" (click)="leaveEvent()" *ngIf="userRsvp">
+            <mat-icon>cancel</mat-icon>
+            Leave Event
+          </button>
+        </ng-container>
+
+        <ng-container *ngIf="isOrganizer || authService.isAdmin()">
+          <button mat-raised-button color="primary" (click)="editEvent()">
+            <mat-icon>edit</mat-icon>
+            Edit Event
+          </button>
+          <button mat-raised-button color="warn" (click)="deleteEvent()">
+            <mat-icon>delete</mat-icon>
+            Delete Event
+          </button>
+        </ng-container>
+      </div>
+
+      <div class="attendees" *ngIf="rsvps.length > 0">
+        <h3>Attendees ({{rsvps.length}})</h3>
+        <div class="attendee-list">
+          <mat-chip-set>
+            <mat-chip *ngFor="let rsvp of rsvps">
+              {{rsvp.userName}} ({{rsvp.status}})
+            </mat-chip>
+          </mat-chip-set>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+<div *ngIf="loading" class="loading-spinner">
+  <mat-spinner></mat-spinner>
+</div>

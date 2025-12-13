@@ -1,0 +1,64 @@
+<div class="container">
+  <h1><mat-icon>dashboard</mat-icon> My Dashboard</h1>
+
+  <mat-tab-group>
+    <mat-tab label="My Events">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Events I'm Organizing</mat-card-title>
+          <button mat-raised-button color="primary" routerLink="/events/create">
+            <mat-icon>add</mat-icon> Create Event
+          </button>
+        </mat-card-header>
+        <mat-list>
+          <mat-list-item *ngFor="let event of myEvents">
+            <mat-icon matListItemIcon>event</mat-icon>
+            <div matListItemTitle>{{event.title}}</div>
+            <div matListItemLine>{{event.eventDate | date:'short'}} - {{event.location}}</div>
+            <button mat-button [routerLink]="['/events', event.id]">View</button>
+          </mat-list-item>
+          <mat-list-item *ngIf="myEvents.length === 0">
+            <p>No events created yet</p>
+          </mat-list-item>
+        </mat-list>
+      </mat-card>
+    </mat-tab>
+
+    <mat-tab label="My RSVPs">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Events I'm Attending</mat-card-title>
+        </mat-card-header>
+        <mat-list>
+          <mat-list-item *ngFor="let rsvp of myRSVPs">
+            <mat-icon matListItemIcon [color]="rsvp.status === 'CONFIRMED' ? 'primary' : 'accent'">
+              {{rsvp.status === 'CONFIRMED' ? 'check_circle' : 'schedule'}}
+            </mat-icon>
+            <div matListItemTitle>{{rsvp.eventTitle}}</div>
+            <div matListItemLine>Status: {{rsvp.status}}</div>
+            <button mat-button [routerLink]="['/events', rsvp.eventId]">View</button>
+          </mat-list-item>
+          <mat-list-item *ngIf="myRSVPs.length === 0">
+            <p>No RSVPs yet</p>
+          </mat-list-item>
+        </mat-list>
+      </mat-card>
+    </mat-tab>
+
+    <mat-tab label="Upcoming Events">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Upcoming Events</mat-card-title>
+        </mat-card-header>
+        <mat-list>
+          <mat-list-item *ngFor="let event of upcomingEvents">
+            <mat-icon matListItemIcon>event_available</mat-icon>
+            <div matListItemTitle>{{event.title}}</div>
+            <div matListItemLine>{{event.eventDate | date:'medium'}}</div>
+            <button mat-button [routerLink]="['/events', event.id]">View</button>
+          </mat-list-item>
+        </mat-list>
+      </mat-card>
+    </mat-tab>
+  </mat-tab-group>
+</div>

@@ -1,0 +1,48 @@
+.app-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+
+  .logo {
+    margin-left: 8px;
+    font-size: 1.2rem;
+    font-weight: 500;
+  }
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  padding: 8px 16px;
+  
+  strong {
+    margin-bottom: 4px;
+  }
+  
+  small {
+    color: var(--text-secondary);
+  }
+}
+
+.main-content {
+  min-height: calc(100vh - 128px);
+  padding-top: 20px;
+}
+
+.app-footer {
+  background: var(--surface-color);
+  border-top: 1px solid var(--border-color);
+  padding: 20px 0;
+  text-align: center;
+  color: var(--text-secondary);
+  margin-top: 40px;
+}
+
+@media (max-width: 768px) {
+  .app-toolbar {
+    button mat-icon + span {
+      display: none;
+    }
+  }
+}

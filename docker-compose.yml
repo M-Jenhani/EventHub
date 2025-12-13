@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: eventhub-postgres
+    environment:
+      POSTGRES_DB: eventhub
+      POSTGRES_USER: eventhub
+      POSTGRES_PASSWORD: eventhub123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - eventhub-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U eventhub"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: eventhub-backend
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      DATABASE_URL: jdbc:postgresql://postgres:5432/eventhub
+      DB_USERNAME: eventhub
+      DB_PASSWORD: eventhub123
+      JWT_SECRET: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+      FRONTEND_URL: http://localhost
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - eventhub-network
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: eventhub-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - eventhub-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+
+networks:
+  eventhub-network:
+    driver: bridge
