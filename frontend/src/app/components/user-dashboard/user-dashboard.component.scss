@@ -2,16 +2,137 @@ h1 {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 24px;
+  margin-bottom: 32px;
+  color: var(--text-color);
+  font-size: 2.5rem;
+  font-weight: 800;
+  letter-spacing: -1px;
+  
+  mat-icon {
+    font-size: 42px;
+    width: 42px;
+    height: 42px;
+    color: var(--primary-color) !important;
+  }
 }
 
 mat-card {
-  margin-top: 20px;
+  margin-top: 28px;
+  background: var(--card-bg) !important;
+  border-radius: 20px !important;
+  box-shadow: var(--shadow-md) !important;
+  border: 1px solid var(--border-color);
+  transition: all 0.3s ease;
+  
+  &:hover {
+    box-shadow: var(--shadow-lg) !important;
+  }
 
   mat-card-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 16px;
+    margin-bottom: 20px;
+    padding: 24px 24px 0 !important;
+    
+    mat-card-title {
+      margin: 0 !important;
+    }
+    
+    button {
+      margin: 20 20 !important;
+    }
+  }
+  
+  mat-card-title {
+    color: var(--card-text) !important;
+    font-size: 1.5rem !important;
+    font-weight: 700 !important;
+  }
+  
+  mat-card-content {
+    padding: 24px !important;
+  }
+}
+
+mat-list-item {
+  min-height: 122px !important;
+  padding: 12px 16px !important;
+  margin-bottom: 8px !important;
+  border-radius: 12px !important;
+  border: 1px solid var(--border-color) !important;
+  
+  mat-icon {
+    color: var(--primary-color) !important;
+  }
+  
+  mat-icon[color="primary"] {
+    color: var(--primary-color) !important;
+  }
+  
+  mat-icon[color="warn"] {
+    color: var(--warning-color) !important;
+  }
+}
+
+/* RSVP Status badges - visible in both modes */
+.status-confirmed {
+  color: white !important;
+  font-weight: 900 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px;
+  padding: 6px 14px;
+  background: #10b981 !important;
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+.status-waitlist {
+  color: white !important;
+  font-weight: 900 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px;
+  padding: 6px 14px;
+  background: #f59e0b !important;
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+/* View button styling */
+.view-button {
+  background: var(--primary-color) !important;
+  color: white !important;
+  border-radius: 8px !important;
+  padding: 8px 20px !important;
+  font-weight: 600 !important;
+  min-width: 70px !important;
+  margin-top: 8px;
+  
+  &:hover {
+    background: var(--primary-dark) !important;
+    color: white !important;
+  }
+}
+
+/* Force view button text to be white */
+.view-button .mdc-button__label,
+button.view-button {
+  color: white !important;
+}
+
+body.dark-theme {
+  .view-button {
+    background: var(--primary-color) !important;
+    color: white !important;
+    
+    .mdc-button__label {
+      color: white !important;
+    }
+    
+    &:hover {
+      background: var(--primary-light) !important;
+    }
   }
 }

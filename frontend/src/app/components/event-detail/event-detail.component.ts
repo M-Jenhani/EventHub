@@ -11,6 +11,7 @@ import { EventService } from '../../services/event.service';
 import { RsvpService } from '../../services/rsvp.service';
 import { AuthService } from '../../services/auth.service';
 import { Event, RSVP } from '../../models/models';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-event-detail',
@@ -126,5 +127,15 @@ export class EventDetailComponent implements OnInit {
         }
       });
     }
+  }
+
+  getPosterUrl(): string {
+    if (!this.event?.posterUrl) {
+      return 'assets/default-event.svg';
+    }
+    if (this.event.posterUrl.startsWith('http')) {
+      return this.event.posterUrl;
+    }
+    return `${environment.apiUrl}${this.event.posterUrl}`;
   }
 }

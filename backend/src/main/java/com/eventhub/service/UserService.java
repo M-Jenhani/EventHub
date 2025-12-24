@@ -5,6 +5,7 @@ import com.eventhub.dto.UserResponse;
 import com.eventhub.exception.ResourceNotFoundException;
 import com.eventhub.model.User;
 import com.eventhub.repository.EventRepository;
+import com.eventhub.repository.NotificationRepository;
 import com.eventhub.repository.RSVPRepository;
 import com.eventhub.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final EventRepository eventRepository;
     private final RSVPRepository rsvpRepository;
+    private final NotificationRepository notificationRepository;
     
     @Transactional(readOnly = true)
     public UserResponse getCurrentUser(String email) {
@@ -58,7 +60,34 @@ public class UserService {
     public void deleteUser(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        userRepository.delete(user);
+        
+        // Get all event IDs organized by this user
+        List<Long> eventIds = eventRepository.findByOrganizerId(userId)
+                .stream()
+                .map(event -> event.getId())
+                .toList();
+        
+        // 1. Delete notifications related to user's events (before deleting events)
+        for (Long eventId : eventIds) {
+            notificationRepository.deleteByRelatedEventId(eventId);
+        }
+        
+        // 2. Delete user's own notifications
+        notificationRepository.deleteByUserId(userId);
+        
+        // 3. Delete RSVPs for events organized by this user (other users' RSVPs)
+        for (Long eventId : eventIds) {
+            rsvpRepository.deleteByEventId(eventId);
+        }
+        
+        // 4. Delete user's own RSVPs to other events
+        rsvpRepository.deleteByUserId(userId);
+        
+        // 5. Delete user's organized events
+        eventRepository.deleteByOrganizerId(userId);
+        
+        // 6. Finally delete the user
+        userRepository.deleteById(userId);
     }
     
     private UserResponse mapToResponse(User user) {

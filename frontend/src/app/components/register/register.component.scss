@@ -39,6 +39,15 @@
     button[type="submit"] {
       margin-top: 16px;
       height: 48px;
+      background: var(--gradient-primary) !important;
+      color: white !important;
+      font-weight: 700 !important;
+      box-shadow: var(--shadow-md) !important;
+      
+      &:hover {
+        box-shadow: var(--shadow-lg) !important;
+        transform: translateY(-2px);
+      }
     }
   }
 }

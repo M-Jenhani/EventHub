@@ -2,13 +2,19 @@ package com.eventhub.service;
 
 import com.eventhub.dto.EventRequest;
 import com.eventhub.dto.EventResponse;
+import com.eventhub.exception.BadRequestException;
 import com.eventhub.exception.ResourceNotFoundException;
 import com.eventhub.exception.UnauthorizedException;
 import com.eventhub.model.Event;
+import com.eventhub.model.Notification;
+import com.eventhub.model.RSVP;
 import com.eventhub.model.User;
 import com.eventhub.repository.EventRepository;
+import com.eventhub.repository.NotificationRepository;
+import com.eventhub.repository.RSVPRepository;
 import com.eventhub.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,11 +28,19 @@ public class EventService {
     
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
+    private final RSVPRepository rsvpRepository;
+    private final NotificationRepository notificationRepository;
+    private final SimpMessagingTemplate messagingTemplate;
     
     @Transactional
     public EventResponse createEvent(EventRequest request, String userEmail) {
         User organizer = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        
+        // Validate event date is today or in the future (comparing only dates, not time)
+        if (request.getEventDate().toLocalDate().isBefore(java.time.LocalDate.now())) {
+            throw new BadRequestException("Event date must be today or in the future");
+        }
         
         Event event = Event.builder()
                 .title(request.getTitle())
@@ -66,6 +80,28 @@ public class EventService {
         event.setPublished(request.getPublished());
         
         event = eventRepository.save(event);
+        
+        // Notify all attendees about the update
+        List<RSVP> rsvps = rsvpRepository.findByEventId(id);
+        String updateMessage = "Event updated: " + event.getTitle() + " - Check the event for new details!";
+        
+        for (RSVP rsvp : rsvps) {
+            Notification notification = Notification.builder()
+                    .user(rsvp.getUser())
+                    .message(updateMessage)
+                    .type(Notification.NotificationType.EVENT_UPDATE)
+                    .relatedEventId(id)
+                    .build();
+            
+            notificationRepository.save(notification);
+            
+            messagingTemplate.convertAndSendToUser(
+                    rsvp.getUser().getEmail(),
+                    "/queue/notifications",
+                    updateMessage
+            );
+        }
+        
         return mapToResponse(event);
     }
     
@@ -81,7 +117,14 @@ public class EventService {
             throw new UnauthorizedException("You don't have permission to delete this event");
         }
         
-        eventRepository.delete(event);
+        // Delete all notifications related to this event first
+        notificationRepository.deleteByRelatedEventId(id);
+        
+        // Delete all RSVPs for this event
+        rsvpRepository.deleteByEventId(id);
+        
+        // Then delete the event
+        eventRepository.deleteById(id);
     }
     
     @Transactional(readOnly = true)
@@ -128,6 +171,10 @@ public class EventService {
     }
     
     private EventResponse mapToResponse(Event event) {
+        Long confirmedCount = rsvpRepository.countConfirmedByEventId(event.getId());
+        if (confirmedCount == null) {
+            confirmedCount = 0L;
+        }
         return EventResponse.builder()
                 .id(event.getId())
                 .title(event.getTitle())
@@ -140,8 +187,8 @@ public class EventService {
                 .published(event.getPublished())
                 .organizerId(event.getOrganizer().getId())
                 .organizerName(event.getOrganizer().getFirstName() + " " + event.getOrganizer().getLastName())
-                .attendeeCount(event.getAttendeeCount())
-                .isFull(event.isFull())
+                .attendeeCount(confirmedCount)
+                .isFull(confirmedCount >= event.getCapacity())
                 .createdAt(event.getCreatedAt())
                 .updatedAt(event.getUpdatedAt())
                 .build();

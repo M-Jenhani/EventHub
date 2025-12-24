@@ -2,6 +2,7 @@ package com.eventhub.repository;
 
 import com.eventhub.model.Event;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -34,4 +35,8 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     @Query("SELECT e FROM Event e WHERE LOWER(e.title) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
            "OR LOWER(e.description) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     List<Event> searchByKeyword(@Param("keyword") String keyword);
+    
+    @Modifying
+    @Query("DELETE FROM Event e WHERE e.organizer.id = :organizerId")
+    void deleteByOrganizerId(@Param("organizerId") Long organizerId);
 }

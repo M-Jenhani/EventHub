@@ -31,8 +31,8 @@ public class NotificationController {
     
     @PutMapping("/{notificationId}/read")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    public ResponseEntity<Void> markAsRead(@PathVariable Long notificationId) {
-        notificationService.markAsRead(notificationId);
+    public ResponseEntity<Void> markAsRead(@PathVariable Long notificationId, Authentication authentication) {
+        notificationService.markAsRead(notificationId, authentication.getName());
         return ResponseEntity.noContent().build();
     }
     

@@ -4,11 +4,20 @@ backend/.mvn/
 backend/mvnw
 backend/mvnw.cmd
 backend/uploads/
+backend/data/
 
 # Frontend
 frontend/node_modules/
 frontend/dist/
 frontend/.angular/
+frontend/package-lock.json
+
+# Root level
+node_modules/
+dist/
+data/
+uploads/
+package-lock.json
 
 # IDEs
 .idea/
@@ -22,3 +31,9 @@ frontend/.angular/
 # Environment
 .env
 .env.local
+
+# OS
+.DS_Store
+Thumbs.db
+*.swp
+*.swo

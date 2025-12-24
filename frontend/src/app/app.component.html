@@ -1,10 +1,15 @@
 <mat-toolbar color="primary" class="app-toolbar">
-  <button mat-button routerLink="/">
+  <button mat-button routerLink="/" class="home-button">
     <mat-icon>event</mat-icon>
     <span class="logo">EventHub</span>
   </button>
   
   <span class="spacer"></span>
+  
+  <!-- Dark mode toggle - always visible -->
+  <button mat-icon-button (click)="themeService.toggleTheme()" class="theme-toggle">
+    <mat-icon>{{ themeService.isDarkMode() ? 'light_mode' : 'dark_mode' }}</mat-icon>
+  </button>
   
   <button mat-button routerLink="/events">
     <mat-icon>list</mat-icon>
@@ -17,9 +22,47 @@
       Dashboard
     </button>
     
-    <button mat-icon-button routerLink="/notifications" [matBadge]="unreadCount" matBadgeColor="warn" [matBadgeHidden]="unreadCount === 0">
+    <button mat-icon-button [matMenuTriggerFor]="notificationMenu" class="notification-button">
       <mat-icon>notifications</mat-icon>
+      <span *ngIf="unreadCount > 0" class="notification-badge">{{unreadCount}}</span>
     </button>
+    
+    <mat-menu #notificationMenu="matMenu" class="notification-menu">
+      <div class="notification-header" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 16px;">
+        <strong>Notifications</strong>
+        <button mat-button class="mark-all-read-btn" *ngIf="unreadCount > 0" (click)="markAllRead($event)" type="button">
+          Mark all read
+        </button>
+      </div>
+      <mat-divider></mat-divider>
+      <ng-container *ngIf="notifications.length > 0; else noNotifications">
+        <button mat-menu-item *ngFor="let notification of notifications" 
+                [ngStyle]="{
+                  'padding': '12px 16px',
+                  'border-left': notification.read ? '4px solid transparent' : '4px solid var(--primary-color)',
+                  'background': hoverNotification === notification ? (notification.read ? 'rgba(99, 102, 241, 0.1)' : 'rgba(99, 102, 241, 0.3)') : (notification.read ? 'transparent' : 'rgba(99, 102, 241, 0.2)'),
+                  'font-weight': notification.read ? 'normal' : '600',
+                  'color': 'var(--text-color)'
+                }"
+                (mouseover)="hoverNotification = notification"
+                (mouseout)="hoverNotification = null"
+                (click)="onNotificationClick(notification)">
+          <mat-icon [color]="notification.read ? '' : 'primary'">
+            {{ getNotificationIcon(notification.type) }}
+          </mat-icon>
+          <div class="notification-content">
+            <span class="notification-message">{{ notification.message }}</span>
+            <small class="notification-time">{{ notification.createdAt | date:'short' }}</small>
+          </div>
+        </button>
+      </ng-container>
+      <ng-template #noNotifications>
+        <div mat-menu-item disabled class="no-notifications">
+          <mat-icon>notifications_none</mat-icon>
+          <span>No notifications</span>
+        </div>
+      </ng-template>
+    </mat-menu>
     
     <button mat-icon-button [matMenuTriggerFor]="userMenu">
       <mat-icon>account_circle</mat-icon>
@@ -31,10 +74,6 @@
         <small>{{ (authService.currentUser$ | async)?.email }}</small>
       </div>
       <mat-divider></mat-divider>
-      <button mat-menu-item (click)="toggleTheme()">
-        <mat-icon>{{ (themeService.darkMode$ | async) ? 'light_mode' : 'dark_mode' }}</mat-icon>
-        Toggle Theme
-      </button>
       <button mat-menu-item (click)="logout()">
         <mat-icon>logout</mat-icon>
         Logout
@@ -47,7 +86,7 @@
       <mat-icon>login</mat-icon>
       Login
     </button>
-    <button mat-raised-button color="accent" routerLink="/register">
+    <button mat-raised-button color="accent" routerLink="/register" class="register-btn">
       Register
     </button>
   </ng-container>
@@ -59,6 +98,6 @@
 
 <footer class="app-footer">
   <div class="container">
-    <p>&copy; 2024 EventHub. All rights reserved.</p>
+    <p>&copy; 2025 EventHub. All rights reserved.</p>
   </div>
 </footer>

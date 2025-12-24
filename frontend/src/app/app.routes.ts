@@ -16,10 +16,6 @@ export const routes: Routes = [
     loadComponent: () => import('./components/event-list/event-list.component').then(m => m.EventListComponent)
   },
   {
-    path: 'events/:id',
-    loadComponent: () => import('./components/event-detail/event-detail.component').then(m => m.EventDetailComponent)
-  },
-  {
     path: 'events/create',
     loadComponent: () => import('./components/event-form/event-form.component').then(m => m.EventFormComponent),
     canActivate: [authGuard]
@@ -28,6 +24,10 @@ export const routes: Routes = [
     path: 'events/edit/:id',
     loadComponent: () => import('./components/event-form/event-form.component').then(m => m.EventFormComponent),
     canActivate: [authGuard]
+  },
+  {
+    path: 'events/:id',
+    loadComponent: () => import('./components/event-detail/event-detail.component').then(m => m.EventDetailComponent)
   },
   {
     path: 'dashboard',

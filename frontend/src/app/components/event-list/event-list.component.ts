@@ -12,6 +12,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { FormsModule } from '@angular/forms';
 import { EventService } from '../../services/event.service';
 import { Event, EventCategory } from '../../models/models';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-event-list',
@@ -65,7 +66,7 @@ export class EventListComponent implements OnInit {
     this.filteredEvents = this.events.filter(event => {
       const matchesKeyword = !this.searchKeyword || 
         event.title.toLowerCase().includes(this.searchKeyword.toLowerCase()) ||
-        event.description.toLowerCase().includes(this.searchKeyword.toLowerCase());
+        (event.description && event.description.toLowerCase().includes(this.searchKeyword.toLowerCase()));
       
       const matchesCategory = !this.selectedCategory || event.category === this.selectedCategory;
       const matchesLocation = !this.selectedLocation || 
@@ -80,5 +81,15 @@ export class EventListComponent implements OnInit {
     this.selectedCategory = '';
     this.selectedLocation = '';
     this.applyFilters();
+  }
+
+  getPosterUrl(event: Event): string {
+    if (!event.posterUrl) {
+      return 'assets/default-event.svg';
+    }
+    if (event.posterUrl.startsWith('http')) {
+      return event.posterUrl;
+    }
+    return `${environment.apiUrl}${event.posterUrl}`;
   }
 }

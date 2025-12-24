@@ -6,10 +6,12 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatBadgeModule } from '@angular/material/badge';
+import { MatDividerModule } from '@angular/material/divider';
 import { AuthService } from './services/auth.service';
 import { ThemeService } from './services/theme.service';
 import { WebsocketService } from './services/websocket.service';
 import { NotificationService } from './services/notification.service';
+import { Notification, NotificationType } from './models/models';
 
 @Component({
   selector: 'app-root',
@@ -22,7 +24,8 @@ import { NotificationService } from './services/notification.service';
     MatButtonModule,
     MatIconModule,
     MatMenuModule,
-    MatBadgeModule
+    MatBadgeModule,
+    MatDividerModule
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
@@ -30,6 +33,8 @@ import { NotificationService } from './services/notification.service';
 export class AppComponent implements OnInit {
   title = 'EventHub';
   unreadCount = 0;
+  notifications: Notification[] = [];
+  hoverNotification: Notification | null = null;
 
   constructor(
     public authService: AuthService,
@@ -43,23 +48,81 @@ export class AppComponent implements OnInit {
     this.authService.currentUser$.subscribe(user => {
       if (user) {
         this.websocketService.connect(user.email);
-        this.loadUnreadCount();
+        this.loadNotifications();
       } else {
         this.websocketService.disconnect();
+        this.notifications = [];
+        this.unreadCount = 0;
       }
     });
 
     this.websocketService.notification$.subscribe(notification => {
       if (notification) {
-        this.loadUnreadCount();
+        this.loadNotifications();
       }
     });
   }
 
-  loadUnreadCount(): void {
-    this.notificationService.getUnreadNotifications().subscribe({
+  loadNotifications(): void {
+    this.notificationService.getUserNotifications().subscribe({
       next: (notifications) => {
-        this.unreadCount = notifications.length;
+        this.notifications = notifications.map(notification => ({
+          ...notification,
+          read: notification.read || false // Ensure `read` is always a boolean
+        })).slice(0, 10); // Show last 10
+        this.unreadCount = this.notifications.filter(n => !n.read).length;
+      },
+      error: (err) => {
+        console.error('Failed to load notifications:', err);
+      }
+    });
+  }
+
+  getNotificationIcon(type: NotificationType): string {
+    switch (type) {
+      case NotificationType.RSVP_CONFIRMED:
+        return 'check_circle';
+      case NotificationType.RSVP_WAITLIST:
+        return 'schedule';
+      case NotificationType.EVENT_UPDATE:
+        return 'update';
+      case NotificationType.EVENT_CANCELLED:
+        return 'cancel';
+      case NotificationType.WAITLIST_PROMOTED:
+        return 'arrow_upward';
+      case NotificationType.EVENT_REMINDER:
+        return 'alarm';
+      default:
+        return 'notifications';
+    }
+  }
+
+  onNotificationClick(notification: Notification): void {
+    if (!notification.read) {
+      this.notificationService.markAsRead(notification.id).subscribe({
+        next: () => {
+          notification.read = true;
+          this.unreadCount = this.notifications.filter(n => !n.read).length;
+        },
+        error: (err) => {
+          console.error('Failed to mark notification as read:', err);
+        }
+      });
+    }
+    if (notification.relatedEventId) {
+      this.router.navigate(['/events', notification.relatedEventId]);
+    }
+  }
+
+  markAllRead(event: Event): void {
+    event.stopPropagation();
+    this.notificationService.markAllAsRead().subscribe({
+      next: () => {
+        this.notifications.forEach(n => n.read = true);
+        this.unreadCount = 0;
+      },
+      error: (err) => {
+        console.error('Failed to mark all notifications as read:', err);
       }
     });
   }

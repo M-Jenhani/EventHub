@@ -2,6 +2,7 @@ package com.eventhub.repository;
 
 import com.eventhub.model.RSVP;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -20,9 +21,17 @@ public interface RSVPRepository extends JpaRepository<RSVP, Long> {
     @Query("SELECT r FROM RSVP r WHERE r.user.id = :userId AND r.status = :status")
     List<RSVP> findByUserIdAndStatus(@Param("userId") Long userId, @Param("status") RSVP.RSVPStatus status);
     
-    @Query("SELECT r FROM RSVP r WHERE r.event.id = :eventId AND r.status = :status")
+    @Query("SELECT r FROM RSVP r WHERE r.event.id = :eventId AND r.status = :status ORDER BY r.createdAt ASC")
     List<RSVP> findByEventIdAndStatus(@Param("eventId") Long eventId, @Param("status") RSVP.RSVPStatus status);
     
     @Query("SELECT COUNT(r) FROM RSVP r WHERE r.event.id = :eventId AND r.status = 'CONFIRMED'")
     Long countConfirmedByEventId(@Param("eventId") Long eventId);
+    
+    @Modifying
+    @Query("DELETE FROM RSVP r WHERE r.user.id = :userId")
+    void deleteByUserId(@Param("userId") Long userId);
+    
+    @Modifying
+    @Query("DELETE FROM RSVP r WHERE r.event.id = :eventId")
+    void deleteByEventId(@Param("eventId") Long eventId);
 }

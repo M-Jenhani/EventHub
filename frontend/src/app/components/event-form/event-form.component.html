@@ -18,13 +18,23 @@
           <mat-error>Description is required</mat-error>
         </mat-form-field>
 
-        <mat-form-field class="full-width">
-          <mat-label>Event Date & Time</mat-label>
-          <input matInput [matDatepicker]="picker" formControlName="eventDate">
-          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-          <mat-datepicker #picker></mat-datepicker>
-          <mat-error>Date is required</mat-error>
-        </mat-form-field>
+        <div class="form-row">
+          <mat-form-field class="date-field">
+            <mat-label>Event Date</mat-label>
+            <input matInput [matDatepicker]="picker" formControlName="eventDate" [min]="minDate">
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+            <mat-error *ngIf="eventForm.get('eventDate')?.hasError('required')">Date is required</mat-error>
+            <mat-error *ngIf="eventForm.get('eventDate')?.hasError('matDatepickerMin')">Date must be in the future</mat-error>
+          </mat-form-field>
+
+          <mat-form-field class="time-field">
+            <mat-label>Event Time</mat-label>
+            <input matInput type="time" formControlName="eventTime">
+            <mat-icon matIconSuffix>schedule</mat-icon>
+            <mat-error>Time is required</mat-error>
+          </mat-form-field>
+        </div>
 
         <mat-form-field class="full-width">
           <mat-label>Location</mat-label>
@@ -48,10 +58,50 @@
           </mat-form-field>
         </div>
 
-        <mat-form-field class="full-width">
-          <mat-label>Poster URL (Optional)</mat-label>
-          <input matInput formControlName="posterUrl">
-        </mat-form-field>
+        <!-- Poster Upload Section -->
+        <div class="poster-section">
+          <label class="poster-label">Event Poster (Optional)</label>
+          
+          <div class="poster-upload-container">
+            <!-- Upload Button -->
+            <div class="upload-button-container" *ngIf="!posterPreview && !isUploading">
+              <input type="file" 
+                     #fileInput 
+                     hidden 
+                     accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
+                     (change)="onFileSelected($event)">
+              <button mat-stroked-button type="button" (click)="fileInput.click()">
+                <mat-icon>cloud_upload</mat-icon>
+                Upload Poster Image
+              </button>
+              <p class="upload-hint">JPG, PNG, GIF, WebP - Max 5MB</p>
+            </div>
+            
+            <!-- Upload Progress -->
+            <div class="upload-progress" *ngIf="isUploading">
+              <mat-progress-bar mode="determinate" [value]="uploadProgress"></mat-progress-bar>
+              <p>Uploading... {{uploadProgress}}%</p>
+            </div>
+            
+            <!-- Preview -->
+            <div class="poster-preview" *ngIf="posterPreview && !isUploading">
+              <img [src]="posterPreview" alt="Event poster preview">
+              <div class="preview-actions">
+                <button mat-icon-button color="warn" type="button" (click)="removePoster()" title="Remove poster">
+                  <mat-icon>delete</mat-icon>
+                </button>
+                <input type="file" 
+                       #fileInputChange 
+                       hidden 
+                       accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
+                       (change)="onFileSelected($event)">
+                <button mat-icon-button type="button" (click)="fileInputChange.click()" title="Change poster">
+                  <mat-icon>edit</mat-icon>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
 
         <div class="actions">
           <button mat-raised-button type="button" routerLink="/events">Cancel</button>

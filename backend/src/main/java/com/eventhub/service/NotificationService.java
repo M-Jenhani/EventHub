@@ -1,6 +1,7 @@
 package com.eventhub.service;
 
 import com.eventhub.dto.NotificationResponse;
+import com.eventhub.exception.BadRequestException;
 import com.eventhub.exception.ResourceNotFoundException;
 import com.eventhub.model.Notification;
 import com.eventhub.model.User;
@@ -41,9 +42,16 @@ public class NotificationService {
     }
     
     @Transactional
-    public void markAsRead(Long notificationId) {
+    public void markAsRead(Long notificationId, String userEmail) {
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        
         Notification notification = notificationRepository.findById(notificationId)
                 .orElseThrow(() -> new ResourceNotFoundException("Notification not found"));
+        
+        if (!notification.getUser().getId().equals(user.getId())) {
+            throw new BadRequestException("You don't have permission to modify this notification");
+        }
         
         notification.setRead(true);
         notificationRepository.save(notification);

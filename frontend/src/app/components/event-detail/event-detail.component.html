@@ -1,19 +1,19 @@
 <div class="container" *ngIf="!loading && event">
-  <button mat-button routerLink="/events">
+  <button mat-button routerLink="/events" class="back-button">
     <mat-icon>arrow_back</mat-icon>
     Back to Events
   </button>
 
   <mat-card class="event-detail-card">
-    <img mat-card-image [src]="event.posterUrl || 'assets/default-event.jpg'" [alt]="event.title" class="event-image">
+    <img mat-card-image [src]="getPosterUrl()" [alt]="event.title" class="event-image">
     
     <mat-card-header>
       <mat-card-title>
         <h1>{{event.title}}</h1>
         <mat-chip-set>
-          <mat-chip>{{event.category}}</mat-chip>
-          <mat-chip *ngIf="event.isFull" color="warn">FULL</mat-chip>
-          <mat-chip *ngIf="userRsvp" [color]="userRsvp.status === 'CONFIRMED' ? 'accent' : 'primary'">
+          <mat-chip [class]="'category-' + event.category.toLowerCase()">{{event.category}}</mat-chip>
+          <mat-chip *ngIf="event.isFull" class="status-full">FULL</mat-chip>
+          <mat-chip *ngIf="userRsvp" [class]="userRsvp.status === 'CONFIRMED' ? 'status-confirmed' : 'status-waitlist'">
             {{userRsvp.status}}
           </mat-chip>
         </mat-chip-set>
@@ -88,7 +88,7 @@
         <h3>Attendees ({{rsvps.length}})</h3>
         <div class="attendee-list">
           <mat-chip-set>
-            <mat-chip *ngFor="let rsvp of rsvps">
+            <mat-chip *ngFor="let rsvp of rsvps" [class]="rsvp.status === 'CONFIRMED' ? 'status-confirmed' : 'status-waitlist'">
               {{rsvp.userName}} ({{rsvp.status}})
             </mat-chip>
           </mat-chip-set>

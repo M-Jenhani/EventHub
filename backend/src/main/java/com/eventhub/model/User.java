@@ -9,7 +9,9 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -41,9 +43,11 @@ public class User {
     
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    @Builder.Default
     private Role role = Role.USER;
     
     @Column(nullable = false)
+    @Builder.Default
     private Boolean enabled = true;
     
     @CreationTimestamp
@@ -53,11 +57,17 @@ public class User {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
     
-    @OneToMany(mappedBy = "organizer", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "organizer", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private Set<Event> organizedEvents = new HashSet<>();
     
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private Set<RSVP> rsvps = new HashSet<>();
+    
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private Set<Notification> notifications = new HashSet<>();
     
     public enum Role {
         USER, ADMIN

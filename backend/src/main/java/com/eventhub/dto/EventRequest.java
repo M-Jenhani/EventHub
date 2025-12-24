@@ -16,7 +16,6 @@ public class EventRequest {
     private String description;
     
     @NotNull(message = "Event date is required")
-    @Future(message = "Event date must be in the future")
     private LocalDateTime eventDate;
     
     @NotBlank(message = "Location is required")

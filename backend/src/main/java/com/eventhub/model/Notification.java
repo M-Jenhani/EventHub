@@ -28,6 +28,7 @@ public class Notification {
     private String message;
     
     @Column(nullable = false)
+    @Builder.Default
     private Boolean read = false;
     
     @Enumerated(EnumType.STRING)

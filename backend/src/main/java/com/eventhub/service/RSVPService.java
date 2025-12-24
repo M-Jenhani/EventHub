@@ -43,7 +43,24 @@ public class RSVPService {
             throw new BadRequestException("You have already RSVP'd to this event");
         }
         
-        RSVP.RSVPStatus status = event.isFull() ? RSVP.RSVPStatus.WAITLIST : RSVP.RSVPStatus.CONFIRMED;
+        // Validation: Cannot RSVP to own event
+        if (event.getOrganizer().getId().equals(user.getId())) {
+            throw new BadRequestException("Organizers cannot RSVP to their own events");
+        }
+        
+        // Validation: Cannot RSVP to past events
+        if (event.getEventDate().isBefore(java.time.LocalDateTime.now())) {
+            throw new BadRequestException("Cannot RSVP to past events");
+        }
+        
+        // Validation: Cannot RSVP to unpublished events
+        if (!event.getPublished()) {
+            throw new BadRequestException("Cannot RSVP to unpublished events");
+        }
+        
+        // Use database count to avoid race condition with lazy loading
+        Long confirmedCount = rsvpRepository.countConfirmedByEventId(eventId);
+        RSVP.RSVPStatus status = confirmedCount >= event.getCapacity() ? RSVP.RSVPStatus.WAITLIST : RSVP.RSVPStatus.CONFIRMED;
         
         RSVP rsvp = RSVP.builder()
                 .user(user)
@@ -91,6 +108,24 @@ public class RSVPService {
         boolean wasConfirmed = rsvp.getStatus() == RSVP.RSVPStatus.CONFIRMED;
         
         rsvpRepository.delete(rsvp);
+        
+        // Notify organizer that someone left the event
+        String leaveMessage = user.getFirstName() + " " + user.getLastName() + 
+                             " has left your event: " + event.getTitle();
+        Notification organizerNotification = Notification.builder()
+                .user(event.getOrganizer())
+                .message(leaveMessage)
+                .type(Notification.NotificationType.EVENT_UPDATE)
+                .relatedEventId(eventId)
+                .build();
+        
+        notificationRepository.save(organizerNotification);
+        
+        messagingTemplate.convertAndSendToUser(
+                event.getOrganizer().getEmail(),
+                "/queue/notifications",
+                leaveMessage
+        );
         
         // If cancelled RSVP was confirmed and there are waitlisted users, promote one
         if (wasConfirmed) {

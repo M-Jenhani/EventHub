@@ -45,6 +45,7 @@ public class Event {
     private String posterUrl;
     
     @Column(nullable = false)
+    @Builder.Default
     private Boolean published = true;
     
     @ManyToOne(fetch = FetchType.LAZY)
@@ -52,6 +53,7 @@ public class Event {
     private User organizer;
     
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private Set<RSVP> rsvps = new HashSet<>();
     
     @CreationTimestamp
@@ -75,6 +77,9 @@ public class Event {
     }
     
     public long getAttendeeCount() {
+        if (rsvps == null) {
+            return 0;
+        }
         return rsvps.stream()
                 .filter(rsvp -> rsvp.getStatus() == RSVP.RSVPStatus.CONFIRMED)
                 .count();

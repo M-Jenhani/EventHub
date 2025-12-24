@@ -4,6 +4,7 @@ import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { Router } from '@angular/router';
 import { AuthResponse, LoginRequest, RegisterRequest, User } from '../models/models';
 import { environment } from '@environments/environment';
+import { WebsocketService } from './websocket.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +16,8 @@ export class AuthService {
 
   constructor(
     private http: HttpClient,
-    private router: Router
+    private router: Router,
+    private websocketService: WebsocketService
   ) {
     this.loadUserFromStorage();
   }
@@ -33,6 +35,7 @@ export class AuthService {
   }
 
   logout(): void {
+    this.websocketService.disconnect();
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     this.currentUserSubject.next(null);
@@ -67,6 +70,8 @@ export class AuthService {
     };
     localStorage.setItem('user', JSON.stringify(user));
     this.currentUserSubject.next(user);
+    // Connect WebSocket for real-time notifications
+    this.websocketService.connect(user.email);
   }
 
   private loadUserFromStorage(): void {

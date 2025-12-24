@@ -24,6 +24,31 @@
     </mat-card>
   </div>
 
+  <!-- Analytics Charts -->
+  <div class="charts-section">
+    <h2><mat-icon>analytics</mat-icon> Analytics</h2>
+    
+    <div class="charts-grid">
+      <mat-card class="chart-card">
+        <mat-card-content>
+          <canvas #categoryChart></canvas>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="chart-card">
+        <mat-card-content>
+          <canvas #eventsChart></canvas>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="chart-card">
+        <mat-card-content>
+          <canvas #rsvpChart></canvas>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+
   <mat-card class="users-table">
     <mat-card-header>
       <mat-card-title>User Management</mat-card-title>
