@@ -1,3 +1,11 @@
+# EventHub
+
+[![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen)](https://eventhub-bli3.onrender.com)
+
+Live Demo: [https://eventhub-bli3.onrender.com](https://eventhub-bli3.onrender.com)
+
+---
+
 # EventHub - Event Management Platform
 
 A full-stack event management application built with Spring Boot and Angular.
