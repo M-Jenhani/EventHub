@@ -69,6 +69,7 @@ public class SecurityConfig {
                         .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/files/**").permitAll()
                         .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/events").permitAll()
                         .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/events/**").permitAll()
+                        .requestMatchers("/api/health").permitAll() // Allow public access to /api/health
                         .anyRequest().authenticated()
                 )
                 .authenticationProvider(authenticationProvider())
