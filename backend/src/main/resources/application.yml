@@ -120,7 +120,7 @@ app:
     expiration: 86400000
   
   cors:
-    allowed-origins: https://eventhub-oj8j.onrender.com
+    allowed-origins: ${FRONTEND_URL}
   
   upload:
     dir: ${UPLOAD_DIR:/app/uploads}

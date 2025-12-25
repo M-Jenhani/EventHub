@@ -1,0 +1,7 @@
+static:
+  buildCommand: npm install && npm run build --prod
+  publishPath: dist
+  routes:
+    - type: rewrite
+      source: /*
+      destination: /index.html

@@ -305,12 +305,18 @@ p {
     border-color: rgba(239, 68, 68, 0.3) !important;
   }
   
+  &.status-confirmed .mdc-evolution-chip__text-label{    
+    color: #059669 !important;
+  }
   &.status-confirmed {
     background: rgba(16, 185, 129, 0.2) !important;
     color: #059669 !important;
     border-color: rgba(16, 185, 129, 0.3) !important;
   }
   
+  &.status-waitlist .mdc-evolution-chip__text-label{    
+    color: #d97706 !important;
+  }
   &.status-waitlist {
     background: rgba(245, 158, 11, 0.2) !important;
     color: #d97706 !important;
@@ -409,15 +415,15 @@ body.dark-theme .mat-mdc-chip {
   }
   
   &.status-confirmed {
-    background: #10b981 !important;
+    background: rgba(16, 185, 129, 0.5) !important;
     color: white !important;
-    border-color: #10b981 !important;
+    border-color: rgba(16, 185, 129, 0.6) !important;
   }
   
   &.status-waitlist {
-    background: #f59e0b !important;
+    background: rgba(245, 158, 11, 0.5) !important;
     color: white !important;
-    border-color: #f59e0b !important;
+    border-color: rgba(245, 158, 11, 0.6)!important;
   }
   
   /* Category-specific colors in dark mode - each has unique background */
@@ -496,40 +502,44 @@ body.dark-theme .mat-mdc-chip {
 
 /* Status badges */
 .status-confirmed {
-  background: #10b981 !important;
-  color: white !important;
+  //background: #10b981 !important;
+  //color: white !important;
   font-weight: 700;
   display: inline-flex;
   align-items: center;
   gap: 6px;
   padding: 8px 16px;
   border-radius: 10px;
-  border: none !important;
+  //border: none !important;
   font-size: 14px;
 }
 
+/*
 .status-confirmed .mdc-evolution-chip__text-label,
 .status-confirmed .mat-mdc-chip-action-label {
   color: white !important;
 }
+*/
 
 .status-waitlist {
-  background: #f59e0b !important;
-  color: white !important;
+  //background: #f59e0b !important;
+  //color: white !important;
   font-weight: 700;
   display: inline-flex;
   align-items: center;
   gap: 6px;
   padding: 8px 16px;
   border-radius: 10px;
-  border: none !important;
+  //border: none !important;
   font-size: 14px;
 }
 
+/*
 .status-waitlist .mdc-evolution-chip__text-label,
 .status-waitlist .mat-mdc-chip-action-label {
   color: white !important;
 }
+
 
 /* Dark mode Material overrides */
 body.dark-theme {
