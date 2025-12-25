@@ -1,6 +1,6 @@
 static:
   buildCommand: npm install && npm run build --prod
-  publishPath: dist
+  publishPath: dist/eventhub-frontend
   routes:
     - type: rewrite
       source: /*
