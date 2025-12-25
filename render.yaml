@@ -3,7 +3,7 @@ services:
     name: eventhub-frontend
     rootDir: frontend
     buildCommand: npm install && npm run build --prod
-    startCommand: npm install express && node server.js
+    startCommand: node server.js
     envVars:
       - key: NODE_ENV
         value: production
