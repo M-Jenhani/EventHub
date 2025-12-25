@@ -1,9 +1,9 @@
 services:
-  - type: static
+  - type: web
     name: eventhub-frontend
     rootDir: frontend
     buildCommand: npm install && npm run build --prod
-    publishPath: dist/eventhub-frontend
-    routes:
-      - path: /*
-        destination: /index.html
+    startCommand: npm install express && node server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
