@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, interval, of } from 'rxjs';
-import { catchError, switchMap, startWith } from 'rxjs/operators';
+import { catchError, switchMap, startWith, timeout } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
@@ -14,9 +14,11 @@ export class BackendStatusService {
       .pipe(
         startWith(0),
         switchMap(() =>
-          this.http.get(environment.apiUrl + '/health', { responseType: 'text' }).pipe(
-            catchError(() => of(null))
-          )
+          this.http.get(environment.apiUrl + '/health', { responseType: 'text' })
+            .pipe(
+              timeout(2000), // 2 seconds timeout
+              catchError(() => of(null))
+            )
         )
       )
       .subscribe((result) => {
