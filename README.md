@@ -2,8 +2,9 @@
 
 [![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen?style=for-the-badge&logo=github)](https://eventhub-demo25.vercel.app)
 
-🌐 Live Demo : [https://eventhub-demo25.vercel.app](https://eventhub-demo25.vercel.app)
+🌐 Live Demo : [https://eventhub-demo25.vercel.app](https://eventhub-demo25.vercel.app)  
 *Note: The backend is hosted on Render's free tier. If the site takes time to load, it may be waking up due to inactivity.*
+
 ---
 ## 📸 Example Screenshots
 
