@@ -15,7 +15,10 @@ export class BackendStatusService {
     interval(4000)
       .pipe()
       .subscribe(() => {
-        this.backendStatusSubject.next('loading');
+        // Only set to loading if not already active
+        if (this.backendStatusSubject.value !== 'active') {
+          this.backendStatusSubject.next('loading');
+        }
         race([
           this.http.get(environment.apiUrl + '/health', { responseType: 'text' }).pipe(
             map(() => 'active' as BackendStatus),
