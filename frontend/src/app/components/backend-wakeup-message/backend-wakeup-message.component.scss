@@ -1,3 +1,4 @@
+
 .backend-wakeup-message {
   position: fixed;
   bottom: 2rem;
@@ -5,8 +6,8 @@
   z-index: 1000;
   display: flex;
   align-items: center;
-  background: var(--background, #fff);
-  color: var(--text, #222);
+  background: var(--surface-color, #fff);
+  color: var(--text-color, #222);
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.15);
   padding: 1rem 1.5rem;
@@ -31,12 +32,5 @@
   100% { transform: rotate(360deg); }
 }
 
-/* Light/Dark mode support */
-:host-context(body.dark-mode) .backend-wakeup-message {
-  --background: #222;
-  --text: #fff;
-}
-:host-context(body.light-mode) .backend-wakeup-message {
-  --background: #fff;
-  --text: #222;
-}
+
+// No need for host-context, use CSS variables from global theme

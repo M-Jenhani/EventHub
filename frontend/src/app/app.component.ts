@@ -12,7 +12,7 @@ import { ThemeService } from './services/theme.service';
 import { WebsocketService } from './services/websocket.service';
 import { NotificationService } from './services/notification.service';
 import { Notification, NotificationType } from './models/models';
-import { BackendStatusService } from './services/backend-status.service';
+import { BackendStatusService, BackendStatus } from './services/backend-status.service';
 import { BackendWakeupMessageComponent } from './components/backend-wakeup-message/backend-wakeup-message.component';
 
 @Component({
@@ -38,7 +38,7 @@ export class AppComponent implements OnInit {
   unreadCount = 0;
   notifications: Notification[] = [];
   hoverNotification: Notification | null = null;
-  backendActive = true;
+  backendStatus: BackendStatus = 'active';
 
   constructor(
     public authService: AuthService,
@@ -67,8 +67,8 @@ export class AppComponent implements OnInit {
       }
     });
 
-    this.backendStatusService.backendActive$.subscribe(active => {
-      this.backendActive = active;
+    this.backendStatusService.backendStatus$.subscribe(status => {
+      this.backendStatus = status;
     });
   }
 

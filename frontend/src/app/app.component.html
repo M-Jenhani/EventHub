@@ -93,7 +93,7 @@
 </mat-toolbar>
 
 
-<app-backend-wakeup-message [show]="!backendActive"></app-backend-wakeup-message>
+<app-backend-wakeup-message [show]="backendStatus === 'loading' || backendStatus === 'inactive'"></app-backend-wakeup-message>
 
 <main class="main-content">
   <router-outlet></router-outlet>
