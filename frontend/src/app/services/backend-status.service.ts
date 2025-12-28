@@ -15,8 +15,9 @@ export class BackendStatusService {
     interval(4000)
       .pipe()
       .subscribe(() => {
-        // Only set to loading if not already active
-        if (this.backendStatusSubject.value !== 'active') {
+        const prev = this.backendStatusSubject.value;
+        // Only set to loading if previous state was not 'active'
+        if (prev !== 'active') {
           this.backendStatusSubject.next('loading');
         }
         race([
