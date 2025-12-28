@@ -76,6 +76,7 @@ EventHub/
 
 ## API Endpoints
 
+Backend URL : [https://eventhub-backend-z1da.onrender.com](https://eventhub-backend-z1da.onrender.com)
 ### Events
 - `GET /api/events` - List all events
 - `POST /api/events` - Create event
