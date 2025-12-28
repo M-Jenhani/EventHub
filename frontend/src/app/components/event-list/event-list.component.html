@@ -42,7 +42,11 @@
   </mat-card>
 
   <div *ngIf="loading" class="loading-spinner">
-    <mat-spinner></mat-spinner>
+    <mat-spinner>
+      <p style="text-align:center; margin-top: 16px;">
+    The backend is currently waking up due to inactivity on Render's free tier. This may take 30-60 seconds. Please wait.
+  </p>
+    </mat-spinner>
   </div>
 
   <div *ngIf="!loading" class="events-grid">

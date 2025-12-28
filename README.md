@@ -1,9 +1,9 @@
 # EventHub
 
-[![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen?style=for-the-badge&logo=github)](https://eventhub-bli3.onrender.com)
+[![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen?style=for-the-badge&logo=github)](https://eventhub-demo25.vercel.app)
 
-🌐 Live Demo : [https://eventhub-bli3.onrender.com](https://eventhub-bli3.onrender.com)
-
+🌐 Live Demo : [https://eventhub-demo25.vercel.app](https://eventhub-demo25.vercel.app)
+*Note: The backend is hosted on Render's free tier. If the site takes time to load, it may be waking up due to inactivity.*
 ---
 
 # EventHub - Event Management Platform
@@ -76,7 +76,8 @@ EventHub/
 
 ## API Endpoints
 
-Backend URL : [https://eventhub-backend-z1da.onrender.com](https://eventhub-backend-z1da.onrender.com)
+🌐 Backend URL : [https://eventhub-backend-z1da.onrender.com](https://eventhub-backend-z1da.onrender.com)  
+
 ### Events
 - `GET /api/events` - List all events
 - `POST /api/events` - Create event
