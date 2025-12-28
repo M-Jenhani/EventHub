@@ -5,6 +5,24 @@
 🌐 Live Demo : [https://eventhub-demo25.vercel.app](https://eventhub-demo25.vercel.app)
 *Note: The backend is hosted on Render's free tier. If the site takes time to load, it may be waking up due to inactivity.*
 ---
+## 📸 Example Screenshots
+
+*Below are a few example screenshots. The app contains additional pages and features not shown here.*
+
+### Home Page
+![Home Page](screenshots/home.png)
+
+### Login
+![Login](screenshots/login.png)
+
+### Event Details
+![Event Details](screenshots/eventdetails.png)
+
+### User Dashboard
+![User Dashboard](screenshots/userdashboard.png)
+
+### admin Dashboard
+![Admin Dashboard](screenshots/admindashboard.png)
 
 # EventHub - Event Management Platform
 
