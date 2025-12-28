@@ -1,8 +1,8 @@
 # EventHub
 
-[![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen)](https://eventhub-bli3.onrender.com)
+[![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen?style=for-the-badge&logo=github)](https://eventhub-bli3.onrender.com)
 
-Live Demo: [https://eventhub-bli3.onrender.com](https://eventhub-bli3.onrender.com)
+🌐 Live Demo : [https://eventhub-bli3.onrender.com](https://eventhub-bli3.onrender.com)
 
 ---
 
