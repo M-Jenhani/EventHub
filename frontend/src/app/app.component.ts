@@ -12,6 +12,8 @@ import { ThemeService } from './services/theme.service';
 import { WebsocketService } from './services/websocket.service';
 import { NotificationService } from './services/notification.service';
 import { Notification, NotificationType } from './models/models';
+import { BackendStatusService } from './services/backend-status.service';
+import { BackendWakeupMessageComponent } from './components/backend-wakeup-message/backend-wakeup-message.component';
 
 @Component({
   selector: 'app-root',
@@ -25,7 +27,8 @@ import { Notification, NotificationType } from './models/models';
     MatIconModule,
     MatMenuModule,
     MatBadgeModule,
-    MatDividerModule
+    MatDividerModule,
+    BackendWakeupMessageComponent
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
@@ -35,13 +38,15 @@ export class AppComponent implements OnInit {
   unreadCount = 0;
   notifications: Notification[] = [];
   hoverNotification: Notification | null = null;
+  backendActive = true;
 
   constructor(
     public authService: AuthService,
     public themeService: ThemeService,
     private websocketService: WebsocketService,
     private notificationService: NotificationService,
-    private router: Router
+    private router: Router,
+    private backendStatusService: BackendStatusService
   ) {}
 
   ngOnInit(): void {
@@ -60,6 +65,10 @@ export class AppComponent implements OnInit {
       if (notification) {
         this.loadNotifications();
       }
+    });
+
+    this.backendStatusService.backendActive$.subscribe(active => {
+      this.backendActive = active;
     });
   }
 
